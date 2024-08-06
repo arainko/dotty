@@ -1544,11 +1544,15 @@ class DoesNotConformToBound(tpe: Type, which: String, bound: Type)(using Context
     case TypeBounds(lo, hi) => lo ne hi
     case _ => false
   override def canExplain = !isBounds
-  def msg(using Context) =
+  def msg(using Context) = {
+    // Scala 2 kind errors: https://github.com/scala/scala/blob/4e5348e7b120e6e37294f869337b4847e06fe4bf/src/compiler/scala/tools/nsc/typechecker/ContextErrors.scala#L1258
+    println(tpe.typeParams)
+    // tpe.pa
     if isBounds then
       i"Type argument ${tpe} does not overlap with $which bound $bound"
     else
       i"Type argument ${tpe} does not conform to $which bound $bound"
+  }
 
 class DoesNotConformToSelfType(category: String, selfType: Type, cls: Symbol,
                                 otherSelf: Type, relation: String, other: Symbol)(
