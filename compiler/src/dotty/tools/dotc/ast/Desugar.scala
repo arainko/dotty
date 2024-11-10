@@ -33,6 +33,8 @@ object desugar {
    */
   val DerivingCompanion: Property.Key[SourcePosition] = Property.Key()
 
+  val DerivingName: Property.Key[TermName] = Property.Key()
+
   /** An attachment for match expressions generated from a PatDef or GenFrom.
    *  Value of key == one of IrrefutablePatDef, IrrefutableGenFrom
    */

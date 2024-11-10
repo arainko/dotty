@@ -41,8 +41,8 @@ trait Deriving {
      *  an instance with the same name does not exist already.
      *  @param  reportErrors  Report an error if an instance with the same name exists already
      */
-    private def addDerivedInstance(clsName: Name, info: Type, pos: SrcPos): Unit = {
-      val instanceName = "derived$".concat(clsName)
+    private def addDerivedInstance(clsName: Name, info: Type, pos: SrcPos, name: Option[TermName]): Unit = {
+      val instanceName = name.getOrElse("derived$".concat(clsName))
       if (ctx.denotNamed(instanceName).exists)
         report.error(em"duplicate type class derivation for $clsName", pos)
       else
@@ -100,7 +100,7 @@ trait Deriving {
         val derivedInfo =
           if derivedParams.isEmpty then monoInfo
           else PolyType.fromParams(derivedParams, monoInfo)
-        addDerivedInstance(originalTypeClassType.typeSymbol.name, derivedInfo, derived.srcPos)
+        addDerivedInstance(originalTypeClassType.typeSymbol.name, derivedInfo, derived.srcPos, derived.removeAttachment(desugar.DerivingName))
       }
 
       def deriveSingleParameter: Unit = {
