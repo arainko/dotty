@@ -34,6 +34,7 @@ import config.Feature.{sourceVersion, migrateTo3}
 import config.SourceVersion.*
 import config.SourceVersion
 import dotty.tools.dotc.config.MigrationVersion
+import dotty.tools.dotc.ast.desugar
 
 object Parsers {
 
@@ -4453,7 +4454,13 @@ object Parsers {
       val derived =
         if (isIdent(nme.derives)) {
           in.nextToken()
-          commaSeparated(() => convertToTypeId(qualId()))
+          commaSeparated { () => 
+            val qual = convertToTypeId(qualId())
+            if isIdent(nme.as) then 
+              in.nextToken()
+              qual.putAttachment(desugar.DerivingName, ident())
+            qual
+          }
         }
         else Nil
       possibleTemplateStart()
